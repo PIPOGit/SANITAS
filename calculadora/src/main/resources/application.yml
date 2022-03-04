@@ -1,0 +1,150 @@
+# ##########################################
+#
+#     SANITAS - Test Calculadora
+#     Configuration File
+#
+# Perfil: "default"
+#         Configuración base.
+#
+# La aplicación está configurada como
+# "cliente" de "Spring BOOT Admin", de
+# codecentric:
+#
+#   https://codecentric.github.io/spring-boot-admin/2.4.3/
+#
+# ##########################################
+
+
+# ==========================================
+# Spring BOOT Configuration
+# ------------------------------------------
+# Puerto del Servidor Tomcat
+# Nombre de la aplicación bajo Tomcat
+# ==========================================
+server:
+  port:                   8080
+application:
+  title:                  "SANITAS - Test Calculadora"
+
+
+# ==========================================
+# Spring BOOT Configuration
+# ------------------------------------------
+# Nombre de la aplicación Spring BOOT
+# Perfiles activos, por defecto.
+#
+# Configuración Spring BOOT Admin Client
+# ==========================================
+spring:
+  application:
+    name:                 "SANITAS - Test Calculadora"
+  # profiles:
+  #  active: local
+
+
+  # ------------------------------------------
+  # Spring BOOT Admin Client Configuration
+  #
+  # Más info: https://codecentric.github.io/spring-boot-admin/2.4.3/#spring-boot-admin-client
+  # ------------------------------------------
+  boot:
+    admin:
+      client:
+        # If enabled or not
+        enabled:          true
+
+        # Timeouts
+        period:           2m
+        connect-timeout:  2m
+        read-timeout:     2m
+
+        # Where the "server" is.
+        # Comment to disable.
+        url:              http://127.0.0.1:9007
+
+        # URL to register ("this" app)
+        instance:
+          service-url:    http://127.0.0.1:${server.port}/
+  jmx:
+    enabled:              true
+
+  # Disable Spring Cloud
+  cloud:
+    config:
+      enabled: false
+
+  mvc:
+    pathmatch:
+      matching-strategy:  ant_path_matcher
+
+
+# ==========================================
+# Spring BOOT Configuration
+# ------------------------------------------
+# Configuración Spring BOOT Actuators
+# ==========================================
+management:
+  # Per Actuator EndPoint
+  endpoint:
+    health:
+      show-components:    always
+      show-details:       always
+    shutdown:
+      enabled:            true
+  endpoints:
+    # + Expose all endpoints by default
+    web:
+      exposure:
+        ### ALL: include: "*"
+        include:          "*"
+        exclude:
+        ### SELECT:
+        # include: beans,configprops,env,health,info,loggers,shutdown
+        # exclude: auditevents,caches,conditions,flyway,httptrace,integrationgraph,liquibase,metrics,mappings,scheduledtasks,sessions,threaddump
+        ### Additional endpoints are only available for Spring MVC, Spring WebFlux, or Jersey: heapdump,jolokia,logfile,prometheus
+      cors:
+        allowed-headers:  "*"
+        allowed-methods:  HEAD, OPTIONS, GET, POST, PUT, DELETE
+        allowed-origins:  "*"
+endpoints:
+  shutdown:
+    enabled:              true
+
+
+
+# ==========================================
+# Spring BOOT Configuration
+# ------------------------------------------
+# Spring BOOT Logging
+# ==========================================
+# debug: true
+logging:
+  level:
+    root: DEBUG
+    org.apache:                          WARN
+    org.springframework:                 INFO
+    org.springframework.web:             INFO
+    org.springframework.security:        INFO
+    org.springframework.security.oauth2: INFO
+    com.atsistemas.sanitas.calculadora:  INFO
+
+
+# ==========================================
+# Spring BOOT Configuration
+# ------------------------------------------
+# Configuración de transporte de seguridad
+# ==========================================
+security:
+  require-ssl:            false
+
+
+
+# ##########################################
+
+
+# ==========================================
+# Other Configurations
+# ------------------------------------------
+# Configuraciones particulares.
+# ==========================================
+
