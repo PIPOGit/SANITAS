@@ -22,7 +22,12 @@ Set-Location "C:\Eclipse\WorkSpace\SANITAS\manager-apis-admin";
 New-Item logs;
 
 # Actualizamos las versiones de las dependencias.
-mvn -D"generateBackupPoms=false" clean versions:update-parent versions:display-dependency-updates versions:use-latest-releases 2>&1 >"logs/maven.versions.log";
+mvn -D"generateBackupPoms=false" `
+clean `
+versions:update-parent `
+versions:display-dependency-updates `
+versions:use-latest-releases `
+2>&1 >"logs/maven.versions.log";
 
 # Arrancamos la aplicación
 mvn clean spring-boot:run 2>&1 >"logs/maven.spring.boot.log";
@@ -56,9 +61,17 @@ cls; IRM -Headers @{"Content-Type"="application/json"} -Method POST http://local
 Aquí viene la prueba en sí.
 
 Para ello, empezamos por crear un proyecto Spring BOOT en: https://start.spring.io/
+
 A continuación:
 + Tuneamos el POM convenientemente.
 + Tuneamos el "application.yml" y el "banner.txt".
+
+Idealmente, vamos a crear un microservicio con dos operaciones:
+
++ GET /suma/AAA/BBB
++ GET /resta/AAA/BBB
+
+Así que...
 
 Primeros pasos, para ajustar versiones.
 Abrimos otro terminal **PowerShell**.
@@ -74,12 +87,26 @@ Set-Location "C:\Eclipse\WorkSpace\SANITAS\calculadora";
 New-Item logs;
 
 # Actualizamos las versiones de las dependencias.
-mvn -D"generateBackupPoms=false" clean versions:update-parent versions:display-dependency-updates versions:use-latest-releases 2>&1 >"logs/maven.versions.log";
+mvn -D"generateBackupPoms=false" `
+clean `
+versions:update-parent `
+versions:display-dependency-updates `
+versions:use-latest-releases `
+2>&1 >"logs/maven.versions.log";
 
 # Dejamos la versión de Spring BOOT en la: "**2.5.7**", por problemas con **SpringFOX**.
 
 # Incorporamos el JAR del Tracer al repo maven local.
-mvn -e -X install:install-file -Dfile='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0.jar' -Dsources='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0-sources.jar' -Djavadoc='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0-javadoc.jar' -DgroupId='io.corp.calculator' -DartifactId='tracer' -Dpackaging='jar' -Dversion='1.0.0' 2>&1 >'logs/maven.install.tracer.log';
+mvn -e -X install:install-file `
+-Dfile='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0.jar' `
+-Dsources='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0-sources.jar' `
+-Djavadoc='\Eclipse\WorkSpace\SANITAS\calculadora\setup\tracer-1.0.0-javadoc.jar' `
+-DgroupId='io.corp.calculator' `
+-DartifactId='tracer' `
+-Dpackaging='jar' `
+-Dversion='1.0.0' `
+2>&1 >'logs/maven.install.tracer.log';
+# NOTA: TracerImpl NO IMPLEMENTA TracerAPI!!!
 
 # Incorporamos la dependencia al POM.
       <dependency>
@@ -87,7 +114,36 @@ mvn -e -X install:install-file -Dfile='\Eclipse\WorkSpace\SANITAS\calculadora\se
           <artifactId>tracer</artifactId>
           <version>1.0.0</version>
       </dependency>
-  + Run test
+
+# Implementamos el código necesario.
+
+# Ejecutamos el microservicio
 mvn clean spring-boot:run 2>&1 >"logs/maven.spring.boot.log";
-      Falla porque aún no hemos configurado SpringFox en código.
 ```
+
+## Prueba de ejecución
+Para probar que funciona abrimos un nuevo terminal PowerShell.
+
+```shell
+# Prueba de suma:
+IRM http://localhost:8080/suma/7/5
+# Resultado: 12.0
+
+# Prueba de resta:
+IRM http://localhost:8080/resta/7/5
+# Resultado: 2.0
+
+# El Swagger de la aplicación está en:
+Start-Process http://127.0.0.1:8080/swagger-ui/index.html
+```
+
+Para detener las aplicaciones:
+
+```shell
+# Shutdown Microservicio
+IRM -Headers @{"Content-Type"="application/json"} -Method POST http://localhost:8080/actuator/shutdown | ConvertTo-Json
+
+# Shutdown Manager Application
+IRM -Headers @{"Content-Type"="application/json"} -Method POST http://localhost:9007/actuator/shutdown | ConvertTo-Json
+```
+
