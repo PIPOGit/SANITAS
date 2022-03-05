@@ -147,3 +147,12 @@ IRM -Headers @{"Content-Type"="application/json"} -Method POST http://localhost:
 IRM -Headers @{"Content-Type"="application/json"} -Method POST http://localhost:9007/actuator/shutdown | ConvertTo-Json
 ```
 
+## Lógica de Implementación
+En primer lugar, indicar que no hemos implementado los tests funcionales por la cuestión del tiempo.
+
+Notas:
++ El "API", tanto su declaración como su implementación, se encuentra en la carpeta: "controllers".
++ La lógica de negocio asociada, se encuentra en la carpeta: "service".
++ Se ha incorporado SpringFox para documentar el API de acuerdo con los estándares.
++ Se ha declarado alguna excepción, aunque no se ha planteado ningún tratamiento especial de las mismas ni tampoco se controlan los distintos tipos de situaciones posibles.
+
