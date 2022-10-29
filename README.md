@@ -19,7 +19,7 @@ $host.ui.RawUI.WindowTitle = "MicroServices Manager Console"
 Set-Location "C:\Eclipse\WorkSpace\SANITAS\manager-apis-admin";
 
 # Creamos una carpeta para los logs
-New-Item logs;
+New-Item -Type Directory logs;
 
 # Actualizamos las versiones de las dependencias.
 mvn -D"generateBackupPoms=false" `
@@ -84,7 +84,7 @@ $host.ui.RawUI.WindowTitle = "Calculadora Console"
 Set-Location "C:\Eclipse\WorkSpace\SANITAS\calculadora";
 
 # Creamos una carpeta para los logs
-New-Item logs;
+New-Item -Type Directory logs;
 
 # Actualizamos las versiones de las dependencias.
 mvn -D"generateBackupPoms=false" `
